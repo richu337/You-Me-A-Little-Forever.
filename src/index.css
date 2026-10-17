@@ -1,0 +1,540 @@
+@import "tailwindcss";
+
+@source "../index.html";
+@source "./**/*.{js,jsx}";
+
+/* ==========================================================================
+   You & Me — design tokens
+   blush · burgundy · warm ivory · soft gold
+   ========================================================================== */
+@theme {
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", "Bradley Hand", cursive;
+  --font-script: "Petit Formal Script", "Brush Script MT", cursive;
+
+  --color-ivory: #fdf8f1;
+  --color-cream: #f6ebdf;
+  --color-blush: #f6d9de;
+  --color-petal: #f1c2ce;
+  --color-rose: #e29eb3;
+  --color-wine: #6e1b33;
+  --color-burgundy: #48101f;
+  --color-night: #1e0409;
+  --color-ink: #3a2429;
+  --color-gold: #c19a2e;
+  --color-gold-soft: #eed593;
+  --color-gold-deep: #8c6a10;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background-color: #2a0711;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-petal);
+    color: var(--color-night);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button {
+    font-family: inherit;
+  }
+}
+
+/* ==========================================================================
+   Surfaces & atmosphere
+   ========================================================================== */
+.velvet {
+  background-color: #2a0711;
+  background-image: radial-gradient(
+    120% 95% at 50% -5%,
+    #7d2440 0%,
+    #521428 38%,
+    #2c0813 74%,
+    #170309 100%
+  );
+}
+
+/* Sections share their edge colours so the seams between them disappear. */
+.velvet-night {
+  background-color: #170309;
+  background-image: radial-gradient(
+    130% 90% at 50% 0%,
+    #5f1a30 0%,
+    #330b1b 42%,
+    #1b0410 76%,
+    #170309 100%
+  );
+}
+
+.paper {
+  background-color: var(--color-ivory);
+  background-image: radial-gradient(
+    125% 85% at 50% 0%,
+    #fffefb 0%,
+    #fdf8f1 42%,
+    #faf1e8 100%
+  );
+}
+
+.blush-wash {
+  background-color: var(--color-ivory);
+  background-image: radial-gradient(90% 65% at 8% 4%, rgba(241, 194, 206, 0.55), transparent 62%),
+    radial-gradient(85% 70% at 94% 96%, rgba(246, 217, 222, 0.7), transparent 64%),
+    radial-gradient(70% 55% at 78% 12%, rgba(238, 213, 147, 0.2), transparent 66%),
+    linear-gradient(180deg, #faf1e8 0%, #fbeef0 52%, #fdf8f1 100%);
+}
+
+/* film grain — a soft, tactile paper/velvet texture */
+.grain-layer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  background: radial-gradient(
+    115% 85% at 50% 45%,
+    transparent 45%,
+    rgba(23, 3, 9, 0.45) 82%,
+    rgba(11, 1, 6, 0.78) 100%
+  );
+}
+
+/* ==========================================================================
+   Type
+   ========================================================================== */
+/* agate & gold-foil lettering */
+.foil {
+  background-image: linear-gradient(
+    100deg,
+    #8c6a10 0%,
+    #c19a2e 14%,
+    #eed593 26%,
+    #fff8e2 33%,
+    #eed593 40%,
+    #c19a2e 56%,
+    #f4e2ae 72%,
+    #b98d1c 88%,
+    #e8cd86 100%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: foil-sheen 11s linear infinite;
+}
+
+.foil-warm {
+  background-image: linear-gradient(
+    104deg,
+    #e2a9b9 0%,
+    #f6d9de 22%,
+    #fff6ee 34%,
+    #eed593 50%,
+    #e29eb3 70%,
+    #f1c2ce 88%,
+    #d99aad 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: foil-sheen 13s linear infinite;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 24, "WONK" 1, "opsz" 120;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  font-weight: 500;
+}
+
+.display-quiet {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 40, "WONK" 0, "opsz" 32;
+  font-weight: 400;
+}
+
+.kicker {
+  font-family: var(--font-body);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 0.68rem;
+}
+
+@media (min-width: 640px) {
+  .kicker {
+    font-size: 0.72rem;
+  }
+}
+
+/* ==========================================================================
+   Rules, threads & flourishes
+   ========================================================================== */
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(193, 154, 46, 0.6), transparent);
+}
+
+.hairline-soft {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 195, 206, 0.55), transparent);
+}
+
+.thread-line {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(193, 154, 46, 0.55) 18%,
+    rgba(238, 213, 147, 0.75) 50%,
+    rgba(193, 154, 46, 0.55) 82%,
+    transparent
+  );
+}
+
+/* ==========================================================================
+   Ambient motion
+   ========================================================================== */
+.heart-float {
+  position: absolute;
+  bottom: -14vh;
+  animation: heart-rise var(--dur, 16s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes heart-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(var(--s0, 0.7)) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--peak, 0.55);
+  }
+  50% {
+    transform: translate3d(var(--drift, 26px), -58vh, 0) scale(var(--s1, 1)) rotate(16deg);
+  }
+  90% {
+    opacity: var(--peak, 0.55);
+  }
+  100% {
+    transform: translate3d(calc(var(--drift, 26px) * -1.2), -118vh, 0) scale(var(--s2, 0.85))
+      rotate(-14deg);
+    opacity: 0;
+  }
+}
+
+.sparkle {
+  position: absolute;
+  animation: twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  40% {
+    opacity: var(--peak, 0.9);
+    transform: scale(1) rotate(45deg);
+  }
+  60% {
+    opacity: var(--peak, 0.9);
+    transform: scale(0.92) rotate(60deg);
+  }
+}
+
+.star {
+  position: absolute;
+  border-radius: 9999px;
+  background: #fff6ea;
+  animation: star-pulse var(--dur, 5s) ease-in-out var(--delay, 0s) infinite;
+  will-change: opacity;
+}
+
+@keyframes star-pulse {
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: var(--peak, 0.85);
+    transform: scale(1.15);
+  }
+}
+
+.petal {
+  position: absolute;
+  top: -16vh;
+  border-radius: 62% 38% 55% 45% / 58% 44% 56% 42%;
+  box-shadow: 0 0 14px rgba(241, 194, 206, 0.45), inset 0 0 6px rgba(255, 255, 255, 0.35);
+  animation: petal-fall var(--dur, 22s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--peak, 0.5);
+  }
+  50% {
+    transform: translate3d(var(--sway, 40px), 55vh, 0) rotate(180deg);
+  }
+  90% {
+    opacity: var(--peak, 0.5);
+  }
+  100% {
+    transform: translate3d(calc(var(--sway, 40px) * -1), 118vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.a-beat {
+  animation: heartbeat 2.6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.075);
+  }
+  24% {
+    transform: scale(0.995);
+  }
+  36% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+.a-halo {
+  animation: halo 4.4s ease-in-out infinite;
+}
+
+.a-pulse-ring {
+  animation: pulse-ring 4.6s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes halo {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+.a-drift {
+  animation: drift 9s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55ch;
+  margin-left: 0.08em;
+  border-bottom: 0;
+  background: currentColor;
+  animation: caret-blink 1.05s steps(1) infinite;
+  vertical-align: -0.02em;
+  height: 0.95em;
+  border-radius: 1px;
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.burst-heart {
+  position: absolute;
+  animation: burst var(--dur, 1.5s) cubic-bezier(0.16, 0.84, 0.44, 1) var(--delay, 0s) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes burst {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--bx, 0px), var(--by, -160px), 0) scale(var(--bs, 1)) rotate(var(--br, 40deg));
+    opacity: 0;
+  }
+}
+
+.ring-bloom {
+  animation: ring-bloom 1.7s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ring-bloom {
+  0% {
+    transform: scale(0.15);
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.sheen-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 34%,
+    rgba(255, 250, 238, 0.55) 49%,
+    rgba(238, 213, 147, 0.35) 54%,
+    transparent 66%
+  );
+  background-size: 260% 100%;
+  animation: foil-sheen 3.2s ease-in-out infinite;
+}
+
+@keyframes foil-sheen {
+  0% {
+    background-position: 140% 0;
+  }
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes foil-sheen-simple {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* candlelight that follows the pointer on the velvet sections */
+.candlelight {
+  background: radial-gradient(
+    240px 240px at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 214, 170, 0.16),
+    rgba(241, 194, 206, 0.08) 42%,
+    transparent 72%
+  );
+}
+
+/* flip cards */
+.card-3d {
+  transform-style: preserve-3d;
+}
+
+.card-face {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   Motion preferences
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .heart-float,
+  .sparkle,
+  .star,
+  .petal,
+  .a-beat,
+  .a-halo,
+  .a-pulse-ring,
+  .a-drift,
+  .foil,
+  .foil-warm,
+  .sheen-sweep,
+  .ring-bloom,
+  .caret,
+  .burst-heart {
+    animation: none !important;
+  }
+
+  .heart-float,
+  .petal {
+    opacity: 0.4;
+  }
+}
