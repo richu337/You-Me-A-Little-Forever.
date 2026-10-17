@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://render.com/schema/render.yaml.json
+#
+# Render Blueprint for "You & Me — A Little Forever".
+# Deploy with: Render Dashboard → New + → Blueprint → pick this repo.
+#
+# Vite 8 requires Node ^20.19.0 || >=22.12.0, so NODE_VERSION is pinned —
+# Render's default can be older and would fail the build.
+
+services:
+  - type: web
+    name: you-me-a-little-forever
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
