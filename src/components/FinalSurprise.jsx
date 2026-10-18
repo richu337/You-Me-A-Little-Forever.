@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Candlelight,
@@ -13,65 +13,22 @@ import {
 import GlowingHeart from './GlowingHeart'
 import GoldButton from './GoldButton'
 import Heart from './Heart'
+import HeartBurst from './HeartBurst'
 import Ornament, { ChapterLabel } from './Ornament'
 import { EASE, Reveal } from './Reveal'
-import { SECRET_MESSAGE } from '../data/content'
-import { between, pick, seededList } from '../lib/random'
+import { FINAL } from '../data/content'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 
-function CelebrationBurst({ count = 22 }) {
-  const parts = useMemo(
-    () =>
-      seededList(count, 977, (rnd, i) => {
-        const angle = (i / count) * Math.PI * 2 + between(rnd, -0.18, 0.18)
-        const distance = between(rnd, 130, 340)
-        return {
-          id: i,
-          x: Math.cos(angle) * distance,
-          y: Math.sin(angle) * distance,
-          rotate: between(rnd, -90, 90),
-          scale: between(rnd, 0.7, 2),
-          size: between(rnd, 9, 26),
-          dur: between(rnd, 1.5, 2.6),
-          delay: between(rnd, 0, 0.25),
-          color: pick(rnd, ['#eed593', '#f1c2ce', '#e29eb3', '#fff6ea', '#c19a2e', '#d9618a']),
-        }
-      }),
-    [count],
-  )
-
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute left-1/2 top-1/2 z-30"
-    >
-      {parts.map((p) => (
-        <span
-          key={p.id}
-          className="burst-heart"
-          style={{
-            color: p.color,
-            '--bx': `${p.x}px`,
-            '--by': `${p.y}px`,
-            '--br': `${p.rotate}deg`,
-            '--bs': p.scale,
-            '--dur': `${p.dur}s`,
-            '--delay': `${p.delay}s`,
-          }}
-        >
-          <Heart size={p.size} />
-        </span>
-      ))}
-    </div>
-  )
-}
-
 export default function FinalSurprise() {
-  const [revealed, setRevealed] = useState(false)
+  // Increments on every "Read Again", which remounts the message so the
+  // reveal (burst, rings, entrance) replays from the start.
+  const [revealCount, setRevealCount] = useState(0)
+  const revealed = revealCount > 0
+
   const glow = usePointerGlow()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-  const paragraphs = SECRET_MESSAGE.split('\n\n')
+  const paragraphs = FINAL.secret.split('\n\n')
 
   return (
     <section
@@ -95,22 +52,47 @@ export default function FinalSurprise() {
       />
       <PetalField count={isDesktop ? 9 : 5} seed={83} peak={0.6} />
 
+      {/* the background dims softly once the hidden message is revealed */}
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1] bg-[#170309]/45"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: revealed ? 1 : 0 }}
+        transition={{ duration: 1.1, ease: 'easeOut' }}
+      />
+
       <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
         <Reveal>
           <ChapterLabel chapter="Chapter Five" title="Forever" />
         </Reveal>
 
         <Reveal delay={0.12} className="mt-16 sm:mt-20">
-          <GlowingHeart size={isDesktop ? 230 : 160} draw />
+          <motion.div
+            animate={
+              revealed
+                ? { scale: 1.1, filter: 'brightness(1.25)' }
+                : { scale: 1, filter: 'brightness(1)' }
+            }
+            transition={{ duration: 1.2, ease: EASE }}
+          >
+            <GlowingHeart
+              size={isDesktop ? 230 : 160}
+              draw
+              glow={revealed ? 'rgba(241,193,208,0.85)' : 'rgba(226,158,179,0.6)'}
+            />
+          </motion.div>
         </Reveal>
 
         <Reveal delay={0.1} className="mt-14">
           <h2
             id="forever-heading"
-            className="display text-[clamp(1.7rem,5vw,3.2rem)] text-blush"
+            className="display text-[clamp(1.7rem,5vw,3.2rem)] uppercase leading-[1.2] tracking-[0.01em] text-blush"
           >
-            Six Years Down, <span className="foil">Forever to Go.</span>{' '}
-            <span className="a-beat inline-block align-baseline not-italic">❤️</span>
+            <span className="block">Six Years Down,</span>
+            <span className="block">
+              <span className="foil">Forever to Go.</span>{' '}
+              <span className="a-beat inline-block align-baseline not-italic">❤️</span>
+            </span>
           </h2>
         </Reveal>
 
@@ -119,13 +101,24 @@ export default function FinalSurprise() {
         </Reveal>
 
         <Reveal delay={0.22}>
-          <blockquote className="display-quiet mx-auto mt-9 max-w-2xl text-[clamp(1rem,2.7vw,1.3rem)] italic leading-relaxed text-ivory/78">
-            If I could go back to the beginning and choose all over again, I&rsquo;d still choose you.
-            In every lifetime, in every version of this world, it would always be you and me.
+          <blockquote className="display-quiet mx-auto mt-9 max-w-2xl text-[clamp(1rem,2.7vw,1.3rem)] italic leading-relaxed text-ivory/85">
+            <span aria-hidden="true" className="text-gold/70">
+              “
+            </span>
+            {FINAL.magic}
+            <span aria-hidden="true" className="text-gold/70">
+              ”
+            </span>
           </blockquote>
         </Reveal>
 
-        <div className="relative mt-16 flex flex-col items-center">
+        <Reveal delay={0.28}>
+          <p className="mx-auto mt-6 max-w-2xl text-[0.95rem] leading-[1.9] text-ivory/75 sm:text-[1rem]">
+            {FINAL.choose}
+          </p>
+        </Reveal>
+
+        <div className="relative mt-16 flex w-full flex-col items-center">
           <AnimatePresence mode="wait">
             {!revealed ? (
               <motion.div
@@ -145,7 +138,7 @@ export default function FinalSurprise() {
                   }}
                 />
                 <GoldButton
-                  onClick={() => setRevealed(true)}
+                  onClick={() => setRevealCount(1)}
                   icon={false}
                   ariaLabel="Reveal one last thing"
                 >
@@ -154,9 +147,10 @@ export default function FinalSurprise() {
               </motion.div>
             ) : (
               <motion.div
-                key="message"
+                key={`message-${revealCount}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.5 }}
                 className="relative flex w-full flex-col items-center"
               >
@@ -168,15 +162,30 @@ export default function FinalSurprise() {
                 <span
                   aria-hidden="true"
                   className="ring-bloom pointer-events-none absolute left-1/2 top-8 -ml-[140px] h-[280px] w-[280px] rounded-full"
-                  style={{ border: '1px solid rgba(241,194,206,0.5)', animationDelay: '0.18s' }}
+                  style={{ border: '1px solid rgba(243,193,208,0.5)', animationDelay: '0.18s' }}
                 />
-                <CelebrationBurst />
+                <HeartBurst
+                  count={22}
+                  seed={977}
+                  minDistance={130}
+                  maxDistance={340}
+                  minSize={9}
+                  maxSize={26}
+                  minDur={1.5}
+                  maxDur={2.6}
+                  minDelay={0}
+                  maxDelay={0.25}
+                  minScale={0.7}
+                  maxScale={2}
+                  colors={['#eed593', '#f1c2ce', '#efa8bc', '#fff6ea', '#d6b477', '#d9618a']}
+                  className="z-30"
+                />
 
                 <motion.p
                   initial={{ opacity: 0, y: -14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-                  className="kicker text-gold-soft/70"
+                  className="kicker text-gold-soft/80"
                 >
                   And here it is
                 </motion.p>
@@ -208,31 +217,42 @@ export default function FinalSurprise() {
                     <Heart size={18} />
                   </div>
 
-                  <p className="display-quiet mx-auto max-w-xl text-[clamp(1.2rem,3.4vw,1.7rem)] italic leading-snug text-blush">
+                  <p className="display-quiet mx-auto max-w-xl text-[clamp(1.15rem,3.2vw,1.6rem)] italic leading-snug text-blush">
                     {paragraphs[0]}
                   </p>
 
                   <div className="mx-auto my-7 h-px w-24 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
 
-                  <p className="mx-auto max-w-xl text-[0.95rem] leading-[1.9] text-ivory/80 sm:text-[1rem]">
-                    {paragraphs.slice(1).join(' ')}
-                  </p>
+                  <div className="mx-auto max-w-xl space-y-5">
+                    <p className="text-[0.95rem] leading-[1.9] text-ivory/85 sm:text-[1rem]">
+                      {paragraphs[1]}
+                    </p>
+                    <p className="text-[0.95rem] leading-[1.9] text-ivory/85 sm:text-[1rem]">
+                      {paragraphs[2]}
+                    </p>
+                  </div>
 
-                  <p className="font-script mt-9 text-[1.5rem] leading-none text-gold-soft/85 sm:text-[1.7rem]">
-                    You &amp; Me, always
+                  <p className="font-script mx-auto mt-9 max-w-xl text-[1.3rem] leading-snug text-gold-soft/90 sm:text-[1.5rem]">
+                    {paragraphs[3]}
                   </p>
                 </motion.div>
 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 1 }}
-                  className="kicker mt-10 flex items-center gap-3 text-blush/45"
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 1 }}
+                  className="mt-10"
                 >
-                  <Heart size={8} className="text-rose" />
-                  keep it forever
-                  <Heart size={8} className="text-rose" />
-                </motion.p>
+                  <GoldButton
+                    tone="light"
+                    onClick={() => setRevealCount((count) => count + 1)}
+                    icon={false}
+                    className="!px-6 !py-3"
+                    ariaLabel="Read the final message again"
+                  >
+                    Read Again
+                  </GoldButton>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

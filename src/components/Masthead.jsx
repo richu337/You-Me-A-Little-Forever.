@@ -3,6 +3,7 @@ import { Bloom, Grain, SparkleField } from './Atmosphere'
 import Heart from './Heart'
 import Ornament from './Ornament'
 import { EASE } from './Reveal'
+import { ANNIVERSARY_DISPLAY } from '../lib/time'
 
 const rise = (delay) => ({
   initial: { opacity: 0, y: 24, filter: 'blur(8px)' },
@@ -20,7 +21,7 @@ export default function Masthead() {
       <SparkleField count={10} seed={77} peak={0.5} />
 
       <motion.div {...rise(0.1)} className="relative z-10 flex flex-col items-center">
-        <span className="kicker text-gold-deep/80">Our Anniversary</span>
+        <span className="kicker text-gold-deep">Our Anniversary</span>
       </motion.div>
 
       <motion.h1
@@ -51,14 +52,14 @@ export default function Masthead() {
         {...rise(0.5)}
         className="display-quiet relative z-10 mt-8 max-w-lg text-[clamp(1rem,2.6vw,1.3rem)] italic leading-relaxed text-ink/70"
       >
-        Six years, countless memories, one love story.
+        {`Six years of our story. A lifetime of possibilities. Just You & Me. ❤️`}
       </motion.p>
 
       <motion.div
         {...rise(0.62)}
-        className="relative z-10 mt-10 flex items-center gap-4 text-[0.72rem] uppercase tracking-[0.3em] text-wine/55"
+        className="relative z-10 mt-10 flex items-center gap-4 text-[0.72rem] uppercase tracking-[0.3em] text-wine/75"
       >
-        <span>06 · 06 · 2020</span>
+        <span>{ANNIVERSARY_DISPLAY}</span>
         <Heart size={8} className="text-rose/80" />
         <span>and every day since</span>
       </motion.div>
@@ -67,7 +68,7 @@ export default function Masthead() {
         {...rise(0.9)}
         className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
       >
-        <span className="kicker text-ink/35">Scroll</span>
+        <span className="kicker text-ink/60">Scroll</span>
         <span className="relative block h-14 w-px overflow-hidden bg-gradient-to-b from-wine/25 to-transparent">
           <motion.span
             className="absolute left-1/2 top-0 block h-3 w-3 -translate-x-1/2 text-rose"

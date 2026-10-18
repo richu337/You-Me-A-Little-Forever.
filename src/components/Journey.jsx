@@ -4,7 +4,8 @@ import Ornament, { ChapterLabel } from './Ornament'
 import { Reveal, staggerItem, staggerParent } from './Reveal'
 import Ticker from './Ticker'
 import { useElapsed } from '../hooks/useElapsed'
-import { formatNumber } from '../lib/time'
+import { ANNIVERSARY_DISPLAY } from '../lib/time'
+import { JOURNEY } from '../data/content'
 import Heart from './Heart'
 
 function Unit({ value, digits, label }) {
@@ -25,7 +26,7 @@ function Unit({ value, digits, label }) {
       >
         <Ticker value={value} digits={digits} />
       </span>
-      <span aria-hidden="true" className="kicker text-gold-deep/75">
+      <span aria-hidden="true" className="kicker text-gold-deep">
         {label}
       </span>
     </motion.div>
@@ -33,8 +34,7 @@ function Unit({ value, digits, label }) {
 }
 
 export default function Journey() {
-  const { years, months, days, hours, minutes, seconds, totalDays, totalHours, totalHeartbeats } =
-    useElapsed(1000)
+  const { years, months, days, hours, minutes, seconds } = useElapsed(1000)
 
   return (
     <section
@@ -49,7 +49,7 @@ export default function Journey() {
         peak={0.34}
         minSize={8}
         maxSize={18}
-        colors={['#f6c2d0', '#fbdde4', '#c19a2e']}
+        colors={['#f6c2d0', '#fbdde4', '#d6b477']}
       />
 
       <div className="relative z-10 mx-auto max-w-5xl">
@@ -60,9 +60,9 @@ export default function Journey() {
         <Reveal delay={0.08}>
           <h2
             id="journey-heading"
-            className="display mt-7 text-center text-[clamp(1.9rem,5.2vw,3.4rem)] text-wine"
+            className="display mt-7 text-center text-[clamp(1.9rem,5.2vw,3.4rem)] uppercase tracking-[0.01em] text-wine"
           >
-            Our Journey Together <span className="a-beat inline-block not-italic">⏳</span>
+            Our Journey Together
           </h2>
         </Reveal>
 
@@ -85,9 +85,9 @@ export default function Journey() {
             />
 
             <motion.div variants={staggerItem} className="flex flex-col items-center gap-3">
-              <span className="kicker text-gold-deep/70">Together for</span>
-              <span className="rounded-full border border-gold/30 px-4 py-1 text-[0.68rem] uppercase tracking-[0.28em] text-wine/60">
-                06 · 06 · 2020
+              <span className="kicker text-gold-deep">Together since</span>
+              <span className="rounded-full border border-gold/30 px-4 py-1 text-[0.68rem] uppercase tracking-[0.28em] text-wine/70">
+                {ANNIVERSARY_DISPLAY}
               </span>
             </motion.div>
 
@@ -111,12 +111,9 @@ export default function Journey() {
 
             <motion.p
               variants={staggerItem}
-              className="mt-6 text-center text-[0.82rem] leading-relaxed tracking-wide text-ink/55"
+              className="display-quiet mt-6 text-center text-[clamp(0.95rem,2.4vw,1.15rem)] italic leading-relaxed text-ink/70"
             >
-              <span className="font-medium text-wine/75">{formatNumber(totalDays)}</span> sunrises ·{' '}
-              <span className="font-medium text-wine/75">{formatNumber(totalHours)}</span> hours ·{' '}
-              <span className="font-medium text-wine/75">≈ {formatNumber(totalHeartbeats)}</span>{' '}
-              heartbeats — and every one of them yours.
+              {JOURNEY.note}
             </motion.p>
           </motion.div>
         </Reveal>
@@ -126,7 +123,7 @@ export default function Journey() {
             <span aria-hidden="true" className="text-gold/80">
               “
             </span>
-            Every second with you has become a little part of my favorite story.
+            {JOURNEY.quote}
             <span aria-hidden="true" className="text-gold/80">
               ”
             </span>

@@ -2,7 +2,8 @@ import { FloatingHearts, Grain, StarField, Vignette } from './Atmosphere'
 import Heart from './Heart'
 import Ornament from './Ornament'
 import { Reveal } from './Reveal'
-import { FOOTER_LINE } from '../data/content'
+import { FOOTER } from '../data/content'
+import { ANNIVERSARY_LONG } from '../lib/time'
 
 export default function Footer() {
   return (
@@ -19,25 +20,28 @@ export default function Footer() {
 
         <Reveal delay={0.1}>
           <p className="display-quiet mt-10 text-[clamp(1.15rem,3.2vw,1.85rem)] italic leading-relaxed text-blush/90">
-            This is our little world.{' '}
+            {FOOTER.line1}
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.16}>
+          <p className="display-quiet mt-4 text-[clamp(1.15rem,3.2vw,1.85rem)] italic leading-relaxed text-blush/90">
             <span className="foil-warm not-italic">Just You &amp; Me.</span> Forever.{' '}
             <span className="not-italic">❤️</span>
           </p>
         </Reveal>
 
-        <Reveal delay={0.18}>
-          <div className="mt-10 flex items-center gap-4 text-[0.66rem] uppercase tracking-[0.3em] text-blush/40">
-            <span>VI</span>
-            <Heart size={7} className="text-rose/70" />
-            <span>06 · 06 · 2020</span>
+        <Reveal delay={0.22}>
+          <div className="mt-9 flex items-center gap-4 text-[0.66rem] uppercase tracking-[0.3em] text-gold-soft/70">
+            <Heart size={7} className="a-beat text-rose" />
+            <span>Since {ANNIVERSARY_LONG}</span>
+            <Heart size={7} className="a-beat text-rose" />
           </div>
         </Reveal>
 
-        <Reveal delay={0.24}>
-          <p className="kicker mt-12 text-gold-soft/35">made with love, only for you</p>
+        <Reveal delay={0.28}>
+          <p className="kicker mt-12 text-blush/65">made with love, only for you</p>
         </Reveal>
-
-        <span className="sr-only">{FOOTER_LINE}</span>
       </div>
     </footer>
   )

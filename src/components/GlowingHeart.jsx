@@ -55,7 +55,7 @@ export default function GlowingHeart({
           <linearGradient id={strokeId} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#eed593" />
             <stop offset="50%" stopColor="#fff6ea" />
-            <stop offset="100%" stopColor="#c19a2e" />
+            <stop offset="100%" stopColor="#d6b477" />
           </linearGradient>
         </defs>
 

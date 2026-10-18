@@ -109,7 +109,7 @@ export function SparkleField({ count = 16, seed = 23, peak = 0.85, className = '
         dur: between(rnd, 2.6, 6.5),
         delay: -between(rnd, 0, 7),
         peak: between(rnd, 0.4, 1),
-        color: pick(rnd, ['#eed593', '#fff6ea', '#f1c2ce', '#c19a2e']),
+        color: pick(rnd, ['#eed593', '#fff6ea', '#f1c2ce', '#d6b477']),
       })),
     [count, seed],
   )

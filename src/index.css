@@ -5,7 +5,7 @@
 
 /* ==========================================================================
    You & Me — design tokens
-   blush · burgundy · warm ivory · soft gold
+   blush pink · soft rose · deep burgundy · warm ivory · muted gold · deep plum
    ========================================================================== */
 @theme {
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
@@ -13,16 +13,16 @@
   --font-hand: "Caveat", "Bradley Hand", cursive;
   --font-script: "Petit Formal Script", "Brush Script MT", cursive;
 
-  --color-ivory: #fdf8f1;
+  --color-ivory: #fff8f2; /* warm ivory */
   --color-cream: #f6ebdf;
-  --color-blush: #f6d9de;
-  --color-petal: #f1c2ce;
-  --color-rose: #e29eb3;
-  --color-wine: #6e1b33;
-  --color-burgundy: #48101f;
-  --color-night: #1e0409;
-  --color-ink: #3a2429;
-  --color-gold: #c19a2e;
+  --color-blush: #f8dce5; /* blush pink */
+  --color-petal: #f3c1d0;
+  --color-rose: #efa8bc; /* soft rose */
+  --color-wine: #651d35; /* deep burgundy */
+  --color-burgundy: #651d35;
+  --color-night: #28151f; /* deep plum */
+  --color-ink: #28151f; /* deep plum, as body ink */
+  --color-gold: #d6b477; /* muted gold */
   --color-gold-soft: #eed593;
   --color-gold-deep: #8c6a10;
 }
@@ -38,7 +38,7 @@
 
   body {
     margin: 0;
-    background-color: #2a0711;
+    background-color: #28151f; /* deep plum behind everything */
     color: var(--color-ink);
     font-family: var(--font-body);
     font-weight: 400;
@@ -53,9 +53,10 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-gold-deep);
     outline-offset: 3px;
     border-radius: 6px;
+    box-shadow: 0 0 0 4px rgba(238, 213, 147, 0.45);
   }
 
   button {
@@ -66,14 +67,21 @@
 /* ==========================================================================
    Surfaces & atmosphere
    ========================================================================== */
-.velvet {
-  background-color: #2a0711;
-  background-image: radial-gradient(
-    120% 95% at 50% -5%,
-    #7d2440 0%,
-    #521428 38%,
-    #2c0813 74%,
-    #170309 100%
+/* the opening screen: a blush-pink-to-burgundy sky, dark enough toward the
+   bottom that light type stays readable (WCAG) */
+.hero-sky {
+  background-color: #651d35;
+  background-image: linear-gradient(
+    180deg,
+    #fceff3 0%,
+    #f8dce5 10%,
+    #f1bdcd 22%,
+    #e392ac 32%,
+    #c1678a 42%,
+    #9a3e5f 52%,
+    #742847 64%,
+    #571a33 78%,
+    #3b0f21 100%
   );
 }
 
@@ -130,14 +138,14 @@
 .foil {
   background-image: linear-gradient(
     100deg,
-    #8c6a10 0%,
-    #c19a2e 14%,
+    #a9812f 0%,
+    #d6b477 14%,
     #eed593 26%,
     #fff8e2 33%,
     #eed593 40%,
-    #c19a2e 56%,
+    #d6b477 56%,
     #f4e2ae 72%,
-    #b98d1c 88%,
+    #c3a15e 88%,
     #e8cd86 100%
   );
   background-size: 260% 100%;
@@ -150,11 +158,11 @@
 .foil-warm {
   background-image: linear-gradient(
     104deg,
-    #e2a9b9 0%,
-    #f6d9de 22%,
+    #efa8bc 0%,
+    #f8dce5 22%,
     #fff6ee 34%,
     #eed593 50%,
-    #e29eb3 70%,
+    #efa8bc 70%,
     #f1c2ce 88%,
     #d99aad 100%
   );
@@ -198,7 +206,7 @@
    ========================================================================== */
 .hairline {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(193, 154, 46, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(214, 180, 119, 0.6), transparent);
 }
 
 .hairline-soft {
@@ -210,9 +218,9 @@
   background: linear-gradient(
     180deg,
     transparent,
-    rgba(193, 154, 46, 0.55) 18%,
+    rgba(214, 180, 119, 0.55) 18%,
     rgba(238, 213, 147, 0.75) 50%,
-    rgba(193, 154, 46, 0.55) 82%,
+    rgba(214, 180, 119, 0.55) 82%,
     transparent
   );
 }
@@ -506,6 +514,26 @@
 
 .card-back {
   transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   Opening screen — fit the viewport on short screens too
+   ========================================================================== */
+.hero-fit {
+  height: 100vh;
+  height: 100svh;
+  overflow-y: auto;
+}
+
+@media (max-height: 680px) {
+  .hero-heart {
+    transform: scale(0.6);
+    margin-block: -32px;
+  }
+
+  .hero-divider {
+    display: none;
+  }
 }
 
 /* ==========================================================================

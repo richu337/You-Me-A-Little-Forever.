@@ -30,10 +30,10 @@ export function ChapterLabel({ chapter, title, tone = 'light', className = '' })
   const isLight = tone === 'light'
   return (
     <div className={`flex flex-col items-center gap-3 ${className}`}>
-      <span className={`kicker ${isLight ? 'text-gold-soft/70' : 'text-gold-deep/80'}`}>
+      <span className={`kicker ${isLight ? 'text-gold-soft/75' : 'text-gold-deep'}`}>
         {chapter}
       </span>
-      <span className={`kicker ${isLight ? 'text-blush/75' : 'text-wine/60'}`}>{title}</span>
+      <span className={`kicker ${isLight ? 'text-blush/75' : 'text-wine/80'}`}>{title}</span>
     </div>
   )
 }

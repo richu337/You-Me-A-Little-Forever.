@@ -13,6 +13,7 @@ import GlowingHeart from './GlowingHeart'
 import Ornament, { ChapterLabel } from './Ornament'
 import { Reveal } from './Reveal'
 import { useMediaQuery } from '../hooks/useMediaQuery'
+import { WORLD } from '../data/content'
 
 export default function LittleWorld() {
   const sectionRef = useRef(null)
@@ -59,7 +60,7 @@ export default function LittleWorld() {
         <Reveal delay={0.08}>
           <h2
             id="little-world-heading"
-            className="display mt-7 text-[clamp(1.9rem,5.2vw,3.4rem)] text-blush"
+            className="display mt-7 text-[clamp(1.9rem,5.2vw,3.4rem)] uppercase tracking-[0.01em] text-blush"
           >
             Our Little World <span className="not-italic">🌸</span>
           </h2>
@@ -90,7 +91,9 @@ export default function LittleWorld() {
         </motion.blockquote>
 
         <Reveal delay={0.1}>
-          <p className="kicker mt-14 text-blush/40">and the whole world went quiet</p>
+          <p className="mx-auto mt-12 max-w-2xl text-center text-[0.95rem] leading-[1.9] text-blush/75 sm:text-[1.02rem]">
+            {WORLD.note}
+          </p>
         </Reveal>
       </div>
     </section>

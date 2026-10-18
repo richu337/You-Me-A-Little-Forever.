@@ -1,8 +1,40 @@
-/** The day this whole story began. */
-export const ANNIVERSARY = new Date(2020, 5, 6, 0, 0, 0, 0)
+/**
+ * The anniversary — the single source of truth for the whole site.
+ *
+ * `ANNIVERSARY_DATE` is an ISO-style date string that is parsed BY HAND into
+ * local calendar components (never through `new Date("2021-06-07")`, which is
+ * parsed as UTC midnight and could land on June 6 in negative-offset
+ * timezones). The anniversary is therefore understood as **local midnight,
+ * June 7 2021, in the visitor's own timezone**, and every calculation below
+ * consistently uses local time — the day can never shift to June 6 or 8.
+ */
+export const ANNIVERSARY_DATE = '2021-06-07'
 
-export const ANNIVERSARY_LONG = 'June 6, 2020'
-export const ANNIVERSARY_SHORT = '06 · 06 · 2020'
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
+const [YEAR, MONTH, DAY] = ANNIVERSARY_DATE.split('-').map(Number)
+
+/** Local-midnight Date for the anniversary (Date months are 0-indexed). */
+export const ANNIVERSARY = new Date(YEAR, MONTH - 1, DAY, 0, 0, 0, 0)
+
+/** "June 7, 2021" — used in prose, e.g. "Since June 7, 2021". */
+export const ANNIVERSARY_LONG = `${MONTHS[MONTH - 1]} ${DAY}, ${YEAR}`
+
+/** "7 June 2021" — the site's house date format. */
+export const ANNIVERSARY_DISPLAY = `${DAY} ${MONTHS[MONTH - 1]} ${YEAR}`
 
 const EMPTY = {
   years: 0,
@@ -11,15 +43,13 @@ const EMPTY = {
   hours: 0,
   minutes: 0,
   seconds: 0,
-  totalDays: 0,
-  totalHours: 0,
-  totalSeconds: 0,
-  totalHeartbeats: 0,
 }
 
 /**
- * Calendar-accurate elapsed time between two dates, plus a few
- * "flourish" totals for the smaller print.
+ * Calendar-accurate elapsed time between two dates, in the visitor's local
+ * time. Negative parts are borrowed forward (seconds → minutes → hours →
+ * days → months → years), and every part is clamped at zero so nothing can
+ * ever display as negative.
  */
 export function elapsedParts(from = ANNIVERSARY, now = new Date()) {
   if (!(now instanceof Date) || Number.isNaN(now.getTime())) return EMPTY
@@ -44,35 +74,25 @@ export function elapsedParts(from = ANNIVERSARY, now = new Date()) {
     hours += 24
     days -= 1
   }
-  if (days < 0) {
-    // borrow the length of the month that just ended
-    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate()
+  // Borrow the length of each month that has not fully passed yet
+  // (a loop, so day-of-month values such as the 31st stay correct).
+  let cursor = new Date(now.getFullYear(), now.getMonth(), 0)
+  while (days < 0) {
+    days += cursor.getDate()
     months -= 1
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth(), 0)
   }
   if (months < 0) {
     months += 12
     years -= 1
   }
 
-  const ms = now.getTime() - from.getTime()
-
   return {
-    years,
-    months,
-    days,
-    hours,
-    minutes,
-    seconds,
-    totalDays: Math.floor(ms / 86400000),
-    totalHours: Math.floor(ms / 3600000),
-    totalSeconds: Math.floor(ms / 1000),
-    // a resting heart, roughly 70 beats a minute
-    totalHeartbeats: Math.floor((ms / 60000) * 70),
+    years: Math.max(0, years),
+    months: Math.max(0, months),
+    days: Math.max(0, days),
+    hours: Math.max(0, hours),
+    minutes: Math.max(0, minutes),
+    seconds: Math.max(0, seconds),
   }
-}
-
-const formatter = new Intl.NumberFormat('en-US')
-
-export function formatNumber(value) {
-  return formatter.format(Math.max(0, Math.floor(value)))
 }

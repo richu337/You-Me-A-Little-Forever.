@@ -47,8 +47,8 @@ export default function App() {
       <div className="relative min-h-screen bg-ivory">
         {storyMounted ? (
           <motion.main
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.15, ease: 'easeOut' }}
           >
             <Masthead />

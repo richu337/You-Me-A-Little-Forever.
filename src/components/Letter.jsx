@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Bloom, FloatingHearts, Grain, PetalField } from './Atmosphere'
 import GoldButton from './GoldButton'
 import Heart from './Heart'
 import Ornament, { ChapterLabel } from './Ornament'
 import { EASE, Reveal } from './Reveal'
-import { LETTER } from '../data/content'
+import { LETTER, LETTER_INTRO } from '../data/content'
 import { useTypewriter } from '../hooks/useTypewriter'
 
 /* ------------------------------------------------------------------ *
@@ -146,17 +146,22 @@ function Envelope({ opened, onOpen }) {
 
       <AnimatePresence>
         {!opened ? (
-          <motion.p
-            key="hint"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <motion.div
+            key="cta"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.5 }}
-            className="kicker mt-9 flex items-center justify-center gap-3 text-gold-deep/70"
+            className="mt-9 flex flex-col items-center gap-4"
           >
-            <Heart size={9} className="a-beat text-rose" />
-            Tap the envelope
-          </motion.p>
+            <GoldButton tone="dark" onClick={onOpen} icon={false} ariaLabel="Open your letter">
+              Open Your Letter ❤️
+            </GoldButton>
+            <span className="kicker flex items-center gap-3 text-gold-deep">
+              <Heart size={9} className="a-beat text-rose" />
+              or tap the envelope
+            </span>
+          </motion.div>
         ) : null}
       </AnimatePresence>
     </div>
@@ -168,6 +173,8 @@ function Envelope({ opened, onOpen }) {
  * ------------------------------------------------------------------ */
 function LetterSheet({ run, onReplay, onSeal }) {
   const [typing, setTyping] = useState(false)
+  const sheetRef = useRef(null)
+  const buttonsRef = useRef(null)
 
   useEffect(() => {
     const id = setTimeout(() => setTyping(true), 950)
@@ -175,6 +182,15 @@ function LetterSheet({ run, onReplay, onSeal }) {
   }, [])
 
   const { shown, done, finish } = useTypewriter(LETTER, { speed: 16, start: typing, run })
+
+  // Land keyboard focus on the sheet when it appears (the "Open Your Letter"
+  // button unmounts), and on the buttons the moment typing completes.
+  useEffect(() => {
+    sheetRef.current?.focus({ preventScroll: true })
+  }, [])
+  useEffect(() => {
+    if (done) buttonsRef.current?.focus({ preventScroll: true })
+  }, [done])
 
   const paragraphs = shown.length ? shown.split('\n\n') : ['']
 
@@ -189,10 +205,12 @@ function LetterSheet({ run, onReplay, onSeal }) {
       <Bloom
         size={520}
         className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        color="rgba(241,194,206,0.45)"
+        color="rgba(243,193,208,0.45)"
       />
 
       <div
+        ref={sheetRef}
+        tabIndex={-1}
         onClick={() => {
           if (!done) finish()
         }}
@@ -213,14 +231,14 @@ function LetterSheet({ run, onReplay, onSeal }) {
         />
 
         <div className="relative">
-          <p className="kicker mb-8 text-gold-deep/60">From my heart to yours</p>
+          <p className="kicker mb-8 text-gold-deep">From my heart to yours</p>
 
-          <div className="font-hand text-[1.32rem] leading-[2.05rem] text-ink/90 sm:text-[1.5rem] sm:leading-[2.35rem]">
+          <div className="font-hand text-[1.42rem] leading-[2.1rem] text-ink/90 sm:text-[1.6rem] sm:leading-[2.4rem]">
             {paragraphs.map((paragraph, index) => (
               <p
                 key={index}
                 className={`mb-5 last:mb-0 ${
-                  index === 0 ? 'text-[1.5rem] font-semibold text-wine sm:text-[1.7rem]' : ''
+                  index === 0 ? 'text-[1.55rem] font-semibold text-wine sm:text-[1.8rem]' : ''
                 }`}
               >
                 {paragraph}
@@ -231,45 +249,35 @@ function LetterSheet({ run, onReplay, onSeal }) {
             ))}
           </div>
 
-          <AnimatePresence>
+          <motion.div
+            ref={buttonsRef}
+            tabIndex={-1}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.35 }}
+            className={`mt-10 flex flex-wrap items-center justify-center gap-4 ${
+              done ? 'border-t border-wine/10 pt-8' : 'border-t border-transparent pt-8'
+            }`}
+          >
             {done ? (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, ease: EASE, delay: 0.25 }}
-                className="mt-10 flex flex-col items-end gap-1"
-              >
-                <span className="text-[0.68rem] uppercase tracking-[0.28em] text-wine/50">
-                  Always yours,
-                </span>
-                <span className="font-script text-[1.6rem] leading-none text-wine sm:text-[1.9rem]">
-                  You &amp; Me
-                </span>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {done ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.7, delay: 0.5 }}
-                className="mt-10 flex flex-wrap items-center justify-center gap-4 border-t border-wine/10 pt-8"
-              >
+              <>
                 <GoldButton tone="dark" onClick={onReplay} icon={false} className="!px-6 !py-3">
                   Read it again
                 </GoldButton>
                 <GoldButton tone="dark" onClick={onSeal} icon={false} className="!px-6 !py-3">
                   Seal it back
                 </GoldButton>
-              </motion.div>
+              </>
             ) : (
-              <p className="mt-8 text-center text-[0.68rem] uppercase tracking-[0.28em] text-wine/35">
-                tap the letter to read it all at once
-              </p>
+              <button
+                type="button"
+                onClick={finish}
+                className="cursor-pointer rounded-full border border-wine/25 px-6 py-3 text-[0.66rem] uppercase tracking-[0.26em] text-wine/70 transition-colors duration-300 hover:border-wine/50 hover:bg-wine/5 hover:text-wine"
+              >
+                Read it all at once
+              </button>
             )}
-          </AnimatePresence>
+          </motion.div>
         </div>
       </div>
     </motion.div>
@@ -310,7 +318,7 @@ export default function Letter() {
         <Reveal delay={0.08}>
           <h2
             id="letter-heading"
-            className="display mt-7 text-center text-[clamp(1.9rem,5.2vw,3.4rem)] text-wine"
+            className="display mt-7 text-center text-[clamp(1.9rem,5.2vw,3.4rem)] uppercase tracking-[0.01em] text-wine"
           >
             A Letter From My Heart <span className="not-italic">💌</span>
           </h2>
@@ -321,8 +329,8 @@ export default function Letter() {
         </Reveal>
 
         <Reveal delay={0.2}>
-          <p className="display-quiet mx-auto mt-8 max-w-md text-center text-[clamp(1rem,2.6vw,1.25rem)] italic text-ink/65">
-            There&rsquo;s something my heart wants you to know&hellip;
+          <p className="display-quiet mx-auto mt-8 max-w-md text-center text-[clamp(1rem,2.6vw,1.25rem)] italic text-ink/75">
+            {LETTER_INTRO}
           </p>
         </Reveal>
 
